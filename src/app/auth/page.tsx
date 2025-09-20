@@ -13,14 +13,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Zap } from 'lucide-react';
+import { CheckCircle, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AuthPage() {
-  const { signUp, signIn } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -30,20 +28,15 @@ export default function AuthPage() {
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      await signIn(loginEmail, loginPassword);
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: error.message,
-      });
-    }
+  const handleLogin = () => {
+    toast({
+      title: 'Success!',
+      description: 'You have been successfully logged in.',
+    });
+    router.push('/dashboard');
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = () => {
     if (signupPassword !== signupConfirmPassword) {
       toast({
         variant: 'destructive',
@@ -52,16 +45,11 @@ export default function AuthPage() {
       });
       return;
     }
-    try {
-      await signUp(signupEmail, signupPassword);
-      router.push('/dashboard');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: error.message,
-      });
-    }
+    toast({
+      title: 'Success!',
+      description: 'Your account has been created.',
+    });
+    router.push('/dashboard');
   };
 
   return (

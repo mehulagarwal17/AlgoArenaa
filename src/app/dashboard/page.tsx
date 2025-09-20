@@ -17,6 +17,7 @@ import {
   Inbox,
   LayoutGrid,
   LineChart,
+  LogOut,
   Menu,
   MoreVertical,
   Settings,
@@ -199,6 +200,11 @@ const ActivityHeatmap = () => {
       </div>
     );
   }
+  
+  const getIntensity = (index: number) => {
+    // This function can be more sophisticated
+    return heatmapData[index] || 0;
+  };
 
   return (
     <div className="grid grid-cols-[auto_1fr] gap-2">
@@ -208,19 +214,19 @@ const ActivityHeatmap = () => {
         <span>Fri</span>
       </div>
       <div className="grid grid-cols-52 grid-rows-7 gap-1">
-        {heatmapData.map((intensity, i) => (
+        {Array.from({ length: 365 }).map((_, i) => (
           <TooltipProvider key={i}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
                   className={`aspect-square rounded-[2px] ${
-                    colors[intensity]
+                    colors[getIntensity(i)]
                   }`}
                 />
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {intensity} contributions on{' '}
+                  {getIntensity(i)} contributions on{' '}
                   {new Date(
                     startDate.getTime() + i * 24 * 60 * 60 * 1000
                   ).toDateString()}
@@ -476,6 +482,12 @@ const DashboardSidebar = () => {
 };
 
 const DashboardHeader = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    router.push('/');
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b border-border/50 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <SidebarTrigger className="md:hidden">
@@ -508,9 +520,13 @@ const DashboardHeader = () => {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button variant="ghost" size="icon" onClick={handleLogout}>
+          <LogOut className="h-5 w-5" />
+          <span className="sr-only">Logout</span>
+        </Button>
       </div>
     </header>
   );

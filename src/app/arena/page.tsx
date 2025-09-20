@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Split from 'react-split';
 import {
   Clock,
@@ -17,29 +18,60 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Editor from '@monaco-editor/react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
-const BattleHeader = () => (
-  <header className="flex h-14 items-center justify-between border-b border-battle-glass-border bg-battle-glass px-4 backdrop-blur-lg">
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2 text-battle-accent">
-        <Clock className="h-5 w-5" />
-        <span className="font-mono text-lg font-bold">14:59</span>
+const BattleHeader = () => {
+  const [timeLeft, setTimeLeft] = useState(15 * 60);
+
+  useEffect(() => {
+    if (timeLeft === 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+  };
+
+  return (
+    <header className="flex h-14 items-center justify-between border-b border-battle-glass-border bg-battle-glass px-4 backdrop-blur-lg">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 text-battle-accent">
+          <Clock className="h-5 w-5" />
+          <span className="font-mono text-lg font-bold">{formatTime(timeLeft)}</span>
+        </div>
+        <Badge variant="outline" className="border-battle-accent/50 text-battle-accent">
+          #BT-2024
+        </Badge>
       </div>
-      <Badge variant="outline" className="border-battle-accent/50 text-battle-accent">
-        #BT-2024
-      </Badge>
-    </div>
-    <div className="text-center">
-      <h1 className="text-lg font-bold text-foreground">Two Sum</h1>
-      <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
-    </div>
-    <div className="flex items-center gap-4">
-      <Button variant="ghost" size="icon">
-        <Settings className="h-5 w-5" />
-      </Button>
-    </div>
-  </header>
-);
+      <div className="text-center">
+        <h1 className="text-lg font-bold text-foreground">Two Sum</h1>
+        <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
+      </div>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon">
+          <Settings className="h-5 w-5" />
+        </Button>
+      </div>
+    </header>
+  );
+};
 
 const ProblemPanel = () => (
   <div className="flex h-full flex-col gap-4 p-4">
@@ -96,9 +128,14 @@ const ProblemPanel = () => (
 );
 
 const CodePanel = () => {
+  const router = useRouter();
   const code = `function twoSum(nums, target) {
   // Your code here
 }`;
+
+  const handleForfeit = () => {
+    router.push('/dashboard');
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -117,6 +154,23 @@ const CodePanel = () => {
         />
       </div>
       <div className="flex items-center justify-end gap-2 border-t border-battle-glass-border bg-battle-glass p-2">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive">Forfeit</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure you want to forfeit?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. You will lose the battle and your rating will be affected.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleForfeit}>Forfeit</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <Button variant="outline" className="border-battle-accent text-battle-accent hover:bg-battle-accent/10 hover:text-battle-accent">Hint</Button>
         <Button variant="outline">Reset</Button>
         <Button className="bg-battle-secondary hover:bg-battle-secondary/90">Run</Button>

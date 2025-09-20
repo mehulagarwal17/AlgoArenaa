@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -31,6 +32,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 const BattleHeader = () => {
+  const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(15 * 60);
 
   useEffect(() => {
@@ -49,6 +51,11 @@ const BattleHeader = () => {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
 
+  const handleForfeit = () => {
+    router.push('/dashboard');
+  };
+
+
   return (
     <header className="flex h-14 items-center justify-between border-b border-battle-glass-border bg-battle-glass px-4 backdrop-blur-lg">
       <div className="flex items-center gap-4">
@@ -65,6 +72,23 @@ const BattleHeader = () => {
         <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
       </div>
       <div className="flex items-center gap-4">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm">Forfeit</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure you want to forfeit?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. You will lose the battle and your rating will be affected.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleForfeit}>Forfeit</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <Button variant="ghost" size="icon">
           <Settings className="h-5 w-5" />
         </Button>
@@ -128,14 +152,9 @@ const ProblemPanel = () => (
 );
 
 const CodePanel = () => {
-  const router = useRouter();
   const code = `function twoSum(nums, target) {
   // Your code here
 }`;
-
-  const handleForfeit = () => {
-    router.push('/dashboard');
-  };
 
   return (
     <div className="flex h-full flex-col">
@@ -154,23 +173,6 @@ const CodePanel = () => {
         />
       </div>
       <div className="flex items-center justify-end gap-2 border-t border-battle-glass-border bg-battle-glass p-2">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">Forfeit</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure you want to forfeit?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. You will lose the battle and your rating will be affected.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleForfeit}>Forfeit</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
         <Button variant="outline" className="border-battle-accent text-battle-accent hover:bg-battle-accent/10 hover:text-battle-accent">Hint</Button>
         <Button variant="outline">Reset</Button>
         <Button className="bg-battle-secondary hover:bg-battle-secondary/90">Run</Button>

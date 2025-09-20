@@ -55,14 +55,6 @@ const BattleHeader = () => {
     router.push('/dashboard');
   };
 
-  const handleRunCode = () => {
-    const newWindow = window.open('', '_blank', 'width=600,height=400');
-    if (newWindow) {
-      newWindow.document.write('<pre>Running code...</pre>');
-      // In a real scenario, you would execute the code and write the actual output.
-    }
-  };
-
   return (
     <header className="flex h-14 items-center justify-between border-b border-battle-glass-border bg-battle-glass px-4 backdrop-blur-lg">
       <div className="flex items-center gap-4">
@@ -79,7 +71,6 @@ const BattleHeader = () => {
         <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
       </div>
       <div className="flex items-center gap-4">
-        <Button onClick={handleRunCode} className="bg-battle-secondary hover:bg-battle-secondary/90" size="sm">Run</Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" size="sm">Forfeit</Button>
@@ -169,7 +160,6 @@ const CodePanel = () => {
     if (newWindow) {
       newWindow.document.write('<html><head><title>Code Output</title><style>body { background-color: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 1rem; }</style></head><body>');
       newWindow.document.write('<h2>Output:</h2>');
-      newWindow.document.write('<pre>Running code...</pre>');
       
       try {
         // This is a sandboxed evaluation. In a real app, this would be a secure backend execution.

@@ -74,6 +74,7 @@ import {
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
+import React, { useState, useEffect } from 'react';
 
 const statsCards = [
   {
@@ -147,15 +148,26 @@ const activityFeed = [
 ];
 
 const ActivityHeatmap = () => {
-  const days = Array.from({ length: 365 });
+  const [heatmapData, setHeatmapData] = useState<number[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const startDate = new Date();
+    startDate.setDate(today.getDate() - 364);
+
+    const generateData = () => {
+      const data = Array.from({ length: 365 }).map(() =>
+        Math.floor(Math.random() * 5)
+      );
+      setHeatmapData(data);
+    };
+
+    generateData();
+  }, []);
+
   const today = new Date();
   const startDate = new Date();
   startDate.setDate(today.getDate() - 364);
-
-  const getIntensity = (dayIndex: number) => {
-    // Fake intensity for demo
-    return Math.floor(Math.random() * 5);
-  };
 
   const colors = [
     'bg-muted/30',
@@ -165,6 +177,10 @@ const ActivityHeatmap = () => {
     'bg-primary',
   ];
 
+  if (heatmapData.length === 0) {
+    return null; // Or a loading skeleton
+  }
+
   return (
     <div className="grid grid-cols-[auto_1fr] gap-2">
       <div className="flex flex-col justify-around text-xs text-muted-foreground">
@@ -173,19 +189,19 @@ const ActivityHeatmap = () => {
         <span>Fri</span>
       </div>
       <div className="grid grid-cols-52 grid-rows-7 gap-1">
-        {days.map((_, i) => (
+        {heatmapData.map((intensity, i) => (
           <TooltipProvider key={i}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
                   className={`aspect-square rounded-[2px] ${
-                    colors[getIntensity(i)]
+                    colors[intensity]
                   }`}
                 />
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {getIntensity(i)} contributions on{' '}
+                  {intensity} contributions on{' '}
                   {new Date(
                     startDate.getTime() + i * 24 * 60 * 60 * 1000
                   ).toDateString()}
@@ -198,6 +214,7 @@ const ActivityHeatmap = () => {
     </div>
   );
 };
+
 
 export default function DashboardPage() {
   return (

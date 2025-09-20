@@ -53,15 +53,19 @@ const Header = () => {
           </ul>
         </nav>
         <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="sm">
-            Sign In
-          </Button>
-          <Button
-            size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Get Started
-          </Button>
+          <Link href="/auth">
+            <Button variant="ghost" size="sm">
+              Sign In
+            </Button>
+          </Link>
+          <Link href="/auth">
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Get Started
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

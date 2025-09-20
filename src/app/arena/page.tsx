@@ -31,7 +31,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-const BattleHeader = () => {
+const BattleHeader = ({ onRunCode }: { onRunCode: () => void }) => {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(15 * 60);
 
@@ -71,6 +71,7 @@ const BattleHeader = () => {
         <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
       </div>
       <div className="flex items-center gap-4">
+        <Button onClick={onRunCode} className="bg-battle-secondary hover:bg-battle-secondary/90" size="sm">Run</Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" size="sm">Forfeit</Button>
@@ -150,39 +151,7 @@ const ProblemPanel = () => (
   </div>
 );
 
-const CodePanel = () => {
-  const [code, setCode] = useState(`function twoSum(nums, target) {
-  // Your code here
-}`);
-
-  const handleRunCode = () => {
-    const newWindow = window.open('', '_blank', 'width=600,height=400');
-    if (newWindow) {
-      newWindow.document.write('<html><head><title>Code Output</title><style>body { background-color: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 1rem; }</style></head><body>');
-      newWindow.document.write('<h2>Output:</h2>');
-      
-      try {
-        // This is a sandboxed evaluation. In a real app, this would be a secure backend execution.
-        const result = eval(`
-          (() => {
-            ${code}
-            return twoSum([2, 7, 11, 15], 9);
-          })()
-        `);
-        newWindow.document.write('<pre>Result: ' + JSON.stringify(result) + '</pre>');
-      } catch (error) {
-        if (error instanceof Error) {
-          newWindow.document.write('<pre style="color: #ef476f;">Error: ' + error.message + '</pre>');
-        } else {
-          newWindow.document.write('<pre style="color: #ef476f;">An unknown error occurred.</pre>');
-        }
-      }
-      
-      newWindow.document.write('</body></html>');
-      newWindow.document.close();
-    }
-  };
-
+const CodePanel = ({ code, setCode }: { code: string, setCode: (code: string) => void }) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex-grow">
@@ -203,7 +172,6 @@ const CodePanel = () => {
       <div className="flex items-center justify-end gap-2 border-t border-battle-glass-border bg-battle-glass p-2">
         <Button variant="outline" className="border-battle-accent text-battle-accent hover:bg-battle-accent/10 hover:text-battle-accent">Hint</Button>
         <Button variant="outline">Reset</Button>
-        <Button onClick={handleRunCode} className="bg-battle-secondary hover:bg-battle-secondary/90">Run</Button>
         <Button className="bg-battle-primary hover:bg-battle-primary/90 text-white">Submit</Button>
       </div>
     </div>
@@ -265,6 +233,37 @@ const OpponentPanel = () => (
 export default function ArenaPage() {
   const [showMatchmaking, setShowMatchmaking] = useState(true);
   const [countdown, setCountdown] = useState(3);
+  const [code, setCode] = useState(`function twoSum(nums, target) {
+  // Your code here
+}`);
+
+  const handleRunCode = () => {
+    const newWindow = window.open('', '_blank', 'width=600,height=400');
+    if (newWindow) {
+      newWindow.document.write('<html><head><title>Code Output</title><style>body { background-color: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 1rem; }</style></head><body>');
+      newWindow.document.write('<h2>Output:</h2>');
+      
+      try {
+        // This is a sandboxed evaluation. In a real app, this would be a secure backend execution.
+        const result = eval(`
+          (() => {
+            ${code}
+            return twoSum([2, 7, 11, 15], 9);
+          })()
+        `);
+        newWindow.document.write('<pre>Result: ' + JSON.stringify(result) + '</pre>');
+      } catch (error) {
+        if (error instanceof Error) {
+          newWindow.document.write('<pre style="color: #ef476f;">Error: ' + error.message + '</pre>');
+        } else {
+          newWindow.document.write('<pre style="color: #ef476f;">An unknown error occurred.</pre>');
+        }
+      }
+      
+      newWindow.document.write('</body></html>');
+      newWindow.document.close();
+    }
+  };
   
   // Fake countdown
   React.useEffect(() => {
@@ -318,7 +317,7 @@ export default function ArenaPage() {
         } as React.CSSProperties
       }
     >
-      <BattleHeader />
+      <BattleHeader onRunCode={handleRunCode} />
       <div className="flex-grow">
         <Split
           className="flex h-full"
@@ -332,7 +331,7 @@ export default function ArenaPage() {
           cursor="col-resize"
         >
           <ProblemPanel />
-          <CodePanel />
+          <CodePanel code={code} setCode={setCode} />
           <OpponentPanel />
         </Split>
       </div>

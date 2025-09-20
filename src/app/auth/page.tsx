@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,8 +15,55 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Zap } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AuthPage() {
+  const { signUp, signIn } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      await signIn(loginEmail, loginPassword);
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error.message,
+      });
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (signupPassword !== signupConfirmPassword) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Passwords do not match.',
+      });
+      return;
+    }
+    try {
+      await signUp(signupEmail, signupPassword);
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error.message,
+      });
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="absolute top-8 left-8">
@@ -40,15 +90,28 @@ export default function AuthPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                />
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Login</Button>
+              <Button className="w-full" onClick={handleLogin}>
+                Login
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -67,19 +130,35 @@ export default function AuthPage() {
                   id="email-signup"
                   type="email"
                   placeholder="m@example.com"
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password-signup">Password</Label>
-                <Input id="password-signup" type="password" />
+                <Input
+                  id="password-signup"
+                  type="password"
+                  value={signupPassword}
+                  onChange={(e) => setSignupPassword(e.target.value)}
+                />
               </div>
-               <div className="space-y-2">
-                <Label htmlFor="confirm-password-signup">Confirm Password</Label>
-                <Input id="confirm-password-signup" type="password" />
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password-signup">
+                  Confirm Password
+                </Label>
+                <Input
+                  id="confirm-password-signup"
+                  type="password"
+                  value={signupConfirmPassword}
+                  onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                />
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Sign Up</Button>
+              <Button className="w-full" onClick={handleSignUp}>
+                Sign Up
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>

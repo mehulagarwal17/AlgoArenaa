@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -75,6 +76,18 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import React, { useState, useEffect } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useRouter } from 'next/navigation';
 
 const statsCards = [
   {
@@ -363,9 +376,45 @@ export default function DashboardPage() {
 
 const DashboardSidebar = () => {
   const { open, setOpen } = useSidebar();
+  const router = useRouter();
+
+  const handleArenaClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push('/arena');
+  };
+
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Home' },
-    { href: '/arena', icon: Swords, label: 'Arena' },
+    {
+      href: '/arena',
+      icon: Swords,
+      label: 'Arena',
+      dialog: (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <SidebarMenuButton tooltip="Arena">
+              <Swords className="h-5 w-5" />
+              <span>Arena</span>
+            </SidebarMenuButton>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you ready for battle?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Once you enter the arena, you will be matched with an opponent.
+                Be prepared to solve a problem under pressure!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Not Yet</AlertDialogCancel>
+              <AlertDialogAction onClick={handleArenaClick}>
+                Enter Arena
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+    },
     { href: '#', icon: Book, label: 'Learn' },
     { href: '#', icon: BarChart, label: 'Stats' },
     { href: '#', icon: Bot, label: 'AI Mentor' },
@@ -398,12 +447,16 @@ const DashboardSidebar = () => {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <Link href={item.href}>
-                <SidebarMenuButton tooltip={item.label}>
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </SidebarMenuButton>
-              </Link>
+              {item.dialog ? (
+                item.dialog
+              ) : (
+                <Link href={item.href}>
+                  <SidebarMenuButton tooltip={item.label}>
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </Link>
+              )}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

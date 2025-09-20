@@ -265,7 +265,7 @@ export default function ArenaPage() {
     }
   };
   
-  // Fake countdown
+  // Fake matchmaking and countdown
   React.useEffect(() => {
     if(showMatchmaking) {
       setTimeout(() => {
@@ -278,7 +278,7 @@ export default function ArenaPage() {
             return prev - 1;
           });
         }, 1000);
-      }, 2000);
+      }, 5000); // Wait 5 seconds for matchmaking
     }
   }, [showMatchmaking]);
 
@@ -286,17 +286,22 @@ export default function ArenaPage() {
   if (showMatchmaking) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-background text-foreground">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-10" style={{
+            backgroundImage:
+            'linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)',
+            backgroundSize: '32px 32px',
+            maskImage: 'radial-gradient(ellipse at center, white 20%, transparent 70%)',
+        }}></div>
         <div className="relative z-10 text-center">
-            <h1 className="text-4xl font-bold">Searching for opponent...</h1>
-            <p className="text-muted-foreground mt-2">This should only take a moment.</p>
-            <div className="mt-8">
-                {countdown > 0 ? (
-                    <div className="text-9xl font-bold text-battle-primary animate-ping">{countdown}</div>
-                ) : (
-                    <Loader className="mx-auto h-24 w-24 animate-spin text-battle-primary" />
-                )}
-            </div>
+            {countdown > 0 ? (
+                 <>
+                    <h1 className="text-4xl font-bold">Matchmaking...</h1>
+                    <p className="text-muted-foreground mt-2">Finding a worthy opponent.</p>
+                    <Loader className="mx-auto mt-8 h-24 w-24 animate-spin text-battle-primary" />
+                 </>
+            ) : (
+                <div className="text-9xl font-bold text-battle-primary animate-ping">{countdown + 3}</div>
+            )}
         </div>
       </div>
     );

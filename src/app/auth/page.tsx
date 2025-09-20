@@ -33,7 +33,7 @@ export default function AuthPage() {
   const handleLogin = async () => {
     try {
       await signIn(loginEmail, loginPassword);
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -54,7 +54,7 @@ export default function AuthPage() {
     }
     try {
       await signUp(signupEmail, signupPassword);
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: any) {
       toast({
         variant: 'destructive',

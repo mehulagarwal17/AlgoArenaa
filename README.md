@@ -5,9 +5,7 @@
   <strong>Where Developers Battle, Learn, and Level Up.</strong>
 </p>
 
-<p align="center">
-  <img src="https://picsum.photos/seed/algoarena-banner/1200/600" alt="AlgoArena Banner" data-ai-hint="futuristic geometric code"/>
-</p>
+
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js Badge"/>
@@ -88,19 +86,6 @@ The application should now be running at [http://localhost:9002](http://localhos
 
 ---
 
-## 🖥️ A Glimpse of the UI
-
-<p align="center">
-  <strong>Dashboard</strong><br>
-  <img src="https://picsum.photos/seed/algo-dashboard/1000/600" alt="AlgoArena Dashboard" width="80%" data-ai-hint="dashboard charts"/>
-</p>
-
-<p align="center">
-  <strong>Battle Arena</strong><br>
-  <img src="https://picsum.photos/seed/algo-arena-ui/1000/600" alt="AlgoArena Battle UI" width="80%" data-ai-hint="code editor terminal"/>
-</p>
-
----
 
 ## 🤝 Contributing
 

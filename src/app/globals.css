@@ -34,4 +34,8 @@
   body {
     @apply bg-background text-foreground;
   }
+  .split {
+    display: flex;
+    flex-direction: row;
+  }
 }

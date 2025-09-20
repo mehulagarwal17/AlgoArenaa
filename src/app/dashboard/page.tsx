@@ -151,23 +151,15 @@ const ActivityHeatmap = () => {
   const [heatmapData, setHeatmapData] = useState<number[]>([]);
 
   useEffect(() => {
-    const today = new Date();
-    const startDate = new Date();
-    startDate.setDate(today.getDate() - 364);
-
-    const generateData = () => {
-      const data = Array.from({ length: 365 }).map(() =>
-        Math.floor(Math.random() * 5)
-      );
-      setHeatmapData(data);
-    };
-
-    generateData();
+    // Generate data on the client side to avoid hydration mismatch
+    const data = Array.from({ length: 365 }).map(() =>
+      Math.floor(Math.random() * 5)
+    );
+    setHeatmapData(data);
   }, []);
 
-  const today = new Date();
   const startDate = new Date();
-  startDate.setDate(today.getDate() - 364);
+  startDate.setDate(startDate.getDate() - 364);
 
   const colors = [
     'bg-muted/30',
@@ -178,7 +170,21 @@ const ActivityHeatmap = () => {
   ];
 
   if (heatmapData.length === 0) {
-    return null; // Or a loading skeleton
+    // Render a skeleton or empty state while data is generating
+    return (
+       <div className="grid grid-cols-[auto_1fr] gap-2">
+        <div className="flex flex-col justify-around text-xs text-muted-foreground">
+          <span>Mon</span>
+          <span>Wed</span>
+          <span>Fri</span>
+        </div>
+        <div className="grid grid-cols-52 grid-rows-7 gap-1">
+          {Array.from({ length: 365 }).map((_, i) => (
+            <div key={i} className="aspect-square rounded-[2px] bg-muted/30" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -358,8 +364,8 @@ export default function DashboardPage() {
 const DashboardSidebar = () => {
   const { open, setOpen } = useSidebar();
   const navItems = [
-    { href: '#', icon: Home, label: 'Home' },
-    { href: '#', icon: Swords, label: 'Arena' },
+    { href: '/dashboard', icon: Home, label: 'Home' },
+    { href: '/arena', icon: Swords, label: 'Arena' },
     { href: '#', icon: Book, label: 'Learn' },
     { href: '#', icon: BarChart, label: 'Stats' },
     { href: '#', icon: Bot, label: 'AI Mentor' },
@@ -392,10 +398,12 @@ const DashboardSidebar = () => {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton tooltip={item.label}>
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </SidebarMenuButton>
+              <Link href={item.href}>
+                <SidebarMenuButton tooltip={item.label}>
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

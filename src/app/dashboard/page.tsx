@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import {
@@ -423,7 +424,7 @@ const DashboardSidebar = () => {
     },
     { href: '#', icon: Book, label: 'Learn' },
     { href: '#', icon: BarChart, label: 'Stats' },
-    { href: '#', icon: Bot, label: 'AI Mentor' },
+    { href: '/mentor', icon: Bot, label: 'AI Mentor' },
   ];
 
   return (
